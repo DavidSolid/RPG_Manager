@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sword.png</file>
+        <file>armor.png</file>
+        <file>potion.png</file>
+    </qresource>
+</RCC>
