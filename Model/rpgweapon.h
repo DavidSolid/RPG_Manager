@@ -16,6 +16,8 @@ public:
     RPGWeapon(std::string,std::string,bool,double,int,bool);
 
     double damage()const;
+
+    double getBdamage()const;
     int getLevel()const;
     bool isOneHanded()const;
 

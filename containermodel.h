@@ -13,7 +13,8 @@ class ContainerModel : public QAbstractListModel
 public:
     enum {
         DescriptionRole=16,
-        CompleteInfoRole=17
+        CompleteInfoRole=17,
+        JsonRole=18
     };
 private:
     Container<DeepPtr<RPGItem>> items;
@@ -24,6 +25,9 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex())const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     //QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 };
 
 #endif // CONTAINERMODEL_H

@@ -21,6 +21,7 @@ int ContainerModel::rowCount(const QModelIndex &)const{
 QVariant ContainerModel::data(const QModelIndex & item,int role) const{
     QVariant out;
     unsigned int index=static_cast<unsigned int>(item.row());
+    DeepPtr<RPGItem> obj=items[index];
     switch (role) {
     case Qt::DisplayRole:
         /*QVariantMap map;
@@ -53,32 +54,56 @@ QVariant ContainerModel::data(const QModelIndex & item,int role) const{
     case DescriptionRole:
         out=QString::fromStdString(items[index]->getDesc());
         break;
-    case CompleteInfoRole:
-        DeepPtr<RPGItem> item=items[index];
+    case CompleteInfoRole:{
         QVariantMap map;
-        std::string category=item->getCategory();
+        std::string category=obj->getCategory();
         switch(categories.at(category)){
         case 0:
             map.insert("category",tr("Arma"));
-            map.insert("damage",dynamic_cast<RPGWeapon&>(*item).damage());
-            map.insert("level",dynamic_cast<RPGWeapon&>(*item).getLevel());
-            map.insert("onehanded",dynamic_cast<RPGWeapon&>(*item).isOneHanded());
-            map.insert("legendary",item->isUnique());
+            map.insert("damage",dynamic_cast<RPGWeapon&>(*obj).damage());
+            map.insert("level",dynamic_cast<RPGWeapon&>(*obj).getLevel());
+            map.insert("onehanded",dynamic_cast<RPGWeapon&>(*obj).isOneHanded());
+            map.insert("legendary",obj->isUnique());
             break;
         case 1:
             map.insert("category",tr("Armatura"));
-            map.insert("defence",dynamic_cast<RPGArmor&>(*item).defense());
-            map.insert("level",dynamic_cast<RPGArmor&>(*item).getLevel());
-            map.insert("type",QString::fromStdString(dynamic_cast<RPGArmor&>(*item).getType()));
-            map.insert("legendary",item->isUnique());
+            map.insert("defence",dynamic_cast<RPGArmor&>(*obj).defense());
+            map.insert("level",dynamic_cast<RPGArmor&>(*obj).getLevel());
+            map.insert("type",QString::fromStdString(dynamic_cast<RPGArmor&>(*obj).getType()));
+            map.insert("legendary",obj->isUnique());
             break;
         case 2:
             map.insert("category",tr("Oggetto Consumabile"));
-            map.insert("positive",dynamic_cast<RPGConsumable&>(*item).isPositive());
+            map.insert("positive",dynamic_cast<RPGConsumable&>(*obj).isPositive());
             break;
         }
-        map.insert("price",item->getPrice());
+        map.insert("price",obj->getPrice());
         out=map;
+        break;}
+    case JsonRole:
+        QVariantMap json;
+        json.insert("category",QString::fromStdString(obj->getCategory()));
+        json.insert("name",QString::fromStdString(obj->getName()));
+        json.insert("description",QString::fromStdString(obj->getDesc()));
+        switch(categories.at(obj->getCategory())){
+        case 0:
+            json.insert("legendary",obj->isUnique());
+            json.insert("b_damage",dynamic_cast<RPGWeapon&>(*obj).getBdamage());
+            json.insert("level",dynamic_cast<RPGWeapon&>(*obj).getLevel());
+            json.insert("onehanded",dynamic_cast<RPGWeapon&>(*obj).isOneHanded());
+            break;
+        case 1:
+            json.insert("legendary",obj->isUnique());
+            json.insert("type",QString::fromStdString(dynamic_cast<RPGArmor&>(*obj).getType()));
+            json.insert("level",dynamic_cast<RPGArmor&>(*obj).getLevel());
+            break;
+        case 2:
+            json.insert("b_cost",dynamic_cast<RPGConsumable&>(*obj).getBcost());
+            json.insert("positive",dynamic_cast<RPGConsumable&>(*obj).isPositive());
+            break;
+        }
+        out=json;
+        break;
     }
     return out;
 }
@@ -97,3 +122,42 @@ QVariant ContainerModel::data(const QModelIndex & item,int role) const{
     }
     return out;
 }*/
+
+bool ContainerModel::setData(const QModelIndex& item, const QVariant& value, int role){
+    unsigned int index=static_cast<unsigned int>(item.row());
+    DeepPtr<RPGItem>& oldobj=items[index];
+    switch(role){
+    case Qt::EditRole:
+        QVariantMap newobj=value.toMap();
+        switch(categories.at(newobj["category"].toString().toStdString())){
+        case 0:
+            oldobj=RPGWeapon(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),newobj["b_damage"].toDouble(),newobj["level"].toInt(),newobj["onehanded"].toInt());
+            break;
+        case 1:
+            oldobj=RPGArmor(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),RPGArmor::fromString(newobj["type"].toString().toStdString()),newobj["level"].toInt());
+            break;
+        case 2:
+            oldobj=RPGConsumable(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["b_cost"].toDouble(),newobj["positive"].toBool());
+            break;
+        }
+        emit dataChanged(item,item);
+        break;
+    }
+    return true;
+}
+
+bool ContainerModel::insertRows(int row, int count, const QModelIndex &parent){
+    beginInsertRows(parent,row,row+count-1);
+    for(int i=0;i<count;i++){
+        items.insert(items.begin()+row,DeepPtr<RPGItem>());
+    }
+    endInsertRows();
+    return true;
+}
+
+bool ContainerModel::removeRows(int row, int count, const QModelIndex &parent){
+    beginRemoveRows(parent,row,row+count-1);
+    items.erase(items.begin()+row,items.begin()+row+count+1);
+    endRemoveRows();
+    return true;
+}

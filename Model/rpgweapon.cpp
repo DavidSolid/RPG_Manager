@@ -11,6 +11,7 @@ double RPGWeapon::damage()const{
     return onehanded?dam:2*dam;
 }
 
+double RPGWeapon::getBdamage()const{return bdamage;}
 int RPGWeapon::getLevel()const{return level;}
 bool RPGWeapon::isOneHanded()const{return onehanded;}
 

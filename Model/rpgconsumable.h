@@ -10,6 +10,7 @@ private:
 public:
     RPGConsumable(std::string,std::string,double,bool);
 
+    double getBcost()const;
     bool isPositive()const;
 
     std::string getCategory()const final;

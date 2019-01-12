@@ -1,11 +1,16 @@
 #include "containerhandler.h"
-#include <QListView>
 #include "containermodel.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDataWidgetMapper>
+#include <QFileDialog>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 
-ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),desc(new QLabel(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this))
+#include <QMessageBox>//debug
+
+ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerview(new QListView(this)),desc(new QLabel(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this))
 {
     //setup desc
     desc->setText("Nessun Oggetto Selezionato");
@@ -15,7 +20,9 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),desc(new Q
     //setup head
     head->setText("Nessuna Informazione Disponibile");
     head->setStyleSheet("font-weight: bold;");
-    head->setMargin(5);
+    head->setAlignment(Qt::AlignCenter);
+    head->setWordWrap(true);
+    head->setMargin(25);
     //setup properties
     properties->setAlignment(Qt::AlignCenter);
     //setup price
@@ -25,7 +32,6 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),desc(new Q
     QVBoxLayout* column2=new QVBoxLayout;
     QHBoxLayout* layout=new QHBoxLayout;
     //view e modello
-    QListView* containerview = new QListView(this);
     ContainerModel* model=new ContainerModel(this);
     containerview->setModel(model);
     connect(containerview->selectionModel(),&QItemSelectionModel::currentChanged,
@@ -87,4 +93,34 @@ void ContainerHandler::updateRightColumn(const QVariant& info){
     }
     properties->setText(strpro);
     price->setText("Prezzo: "+map["price"].toString());
+}
+
+void ContainerHandler::save(){
+    QMessageBox result;
+    QString filename=QFileDialog::getSaveFileName(this,"Scegli file su cui salvare","","Json file (*.json)");
+    if(filename.isEmpty() || filename.isNull()){
+        result.setText("Impossibile salvare. Nessun File selezionato");
+    }
+    else{
+        QFile file(filename);
+        if(!file.open(QIODevice::WriteOnly)){
+            result.setText("Impossibile aprire il file selezionato");
+        }
+        else{
+            if(file.write(getJsonParsed())!=-1){
+                result.setText("Salvataggio avvenuto con successo in "+filename);
+            }
+            else result.setText("Si è verificato un errore durante il salvataggio");
+        }
+    }
+    result.exec();
+}
+
+QByteArray ContainerHandler::getJsonParsed()const{
+    int nentry=containerview->model()->rowCount();
+    QJsonArray array;
+    for(int i=0;i<nentry;i++){
+        array.append(QJsonObject::fromVariantMap(containerview->model()->index(i,0).data(ContainerModel::JsonRole).toMap()));
+    }
+    return QJsonDocument(array).toJson();
 }

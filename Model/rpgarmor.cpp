@@ -3,6 +3,24 @@
 const double RPGArmor::increase_per_level=2;
 const double RPGArmor::unique_boost=25;
 
+RPGArmor::armorclass RPGArmor::fromString(std::string s){
+    if(s=="wood"){
+        return wood;
+    }
+    if(s=="bronze"){
+        return bronze;
+    }
+    if(s=="iron"){
+        return iron;
+    }
+    if(s=="steel"){
+        return steel;
+    }
+    //if(s=="mithril"){
+        return mithril;
+    //}
+}
+
 RPGArmor::RPGArmor(std::string n,std::string d,bool u,armorclass t,int l):RPGItem(n,d,u),type(t),level(l){}
 
 int RPGArmor::getLevel()const{return level;}
