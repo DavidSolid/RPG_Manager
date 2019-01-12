@@ -7,6 +7,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+private:
+    void createMenu();
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();

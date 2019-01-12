@@ -8,7 +8,9 @@ class ContainerHandler : public QWidget
 {
     Q_OBJECT
 private:
-    QLabel* desc;
+    QLabel *desc,*head,*properties,*price;
+
+    void updateRightColumn(const QVariant&);
 public:
     ContainerHandler(QWidget *parent = nullptr);
 

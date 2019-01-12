@@ -4,6 +4,7 @@
 #include <Model/Container/container.h>
 #include <Model/Container/deepptr.h>
 #include <Model/rpgitem.h>
+#include <map>
 
 class ContainerModel : public QAbstractListModel
 {
@@ -16,6 +17,8 @@ public:
     };
 private:
     Container<DeepPtr<RPGItem>> items;
+    std::map<std::string,int> categories;
+
 public:
     ContainerModel(QObject* =nullptr);
     int rowCount(const QModelIndex &parent = QModelIndex())const override;
