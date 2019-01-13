@@ -354,12 +354,14 @@ void Container<T>::push_back(const T& element) {
 
 template<typename T>
 void Container<T>::insert(Container<T>::iterator pos, const T & a){
+    int index=pos-begin();
     if(size_b==capacity_b){
         expandBuffer();
     }
+    pos=begin()+index;
     iterator it=end();
-    for(;it!=pos;it--){
-        *it=it[-1];
+    for(;it!=pos;--it){
+        *it=it[-1]; //forse problema qui
     }
     *it=a;
     ++size_b;

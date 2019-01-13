@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QListView>
+#include <QJsonDocument>
 
 class ContainerHandler : public QWidget
 {
@@ -16,11 +17,13 @@ private:
 public:
     ContainerHandler(QWidget *parent = nullptr);
     QByteArray getJsonParsed()const;
+    void loadInModel(const QJsonDocument&);
 signals:
 
 public slots:
     void changeInfos(const QModelIndex &,const QModelIndex &);
     void save();
+    void load();
 };
 
 #endif // CONTAINERHANDLER_H

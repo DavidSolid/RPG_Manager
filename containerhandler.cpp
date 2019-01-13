@@ -6,7 +6,6 @@
 #include <QFileDialog>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QJsonDocument>
 
 #include <QMessageBox>//debug
 
@@ -116,6 +115,37 @@ void ContainerHandler::save(){
     result.exec();
 }
 
+void ContainerHandler::load(){
+    QMessageBox result;
+    QString filename=QFileDialog::getOpenFileName(this,"Scegli file da cui caricare","","Json file (*.json)");
+    if(filename.isEmpty() || filename.isNull()){
+        result.setText("Impossibile salvare. Nessun File selezionato");
+    }
+    else{
+        QFile file(filename);
+        if(!file.open(QIODevice::ReadOnly)){
+            result.setText("Impossibile aprire il file selezionato");
+        }
+        else{
+            QByteArray rawdata=file.readAll();
+            if(rawdata.isEmpty()){
+                result.setText("File Vuoto");
+            }
+            else{
+                QJsonDocument doc=QJsonDocument::fromJson(rawdata);
+                if(doc.isNull()){
+                    result.setText("Errore di deserializzazione. File JSON non valido");
+                }
+                else {
+                    loadInModel(doc);
+                    result.setText("File caricato correttamente");
+                }
+            }
+        }
+    }
+    result.exec();
+}
+
 QByteArray ContainerHandler::getJsonParsed()const{
     int nentry=containerview->model()->rowCount();
     QJsonArray array;
@@ -123,4 +153,14 @@ QByteArray ContainerHandler::getJsonParsed()const{
         array.append(QJsonObject::fromVariantMap(containerview->model()->index(i,0).data(ContainerModel::JsonRole).toMap()));
     }
     return QJsonDocument(array).toJson();
+}
+
+void ContainerHandler::loadInModel(const QJsonDocument& doc){
+    QJsonArray array=doc.array();
+    QAbstractItemModel* model=containerview->model();
+    //model->removeRows(0,model->rowCount()); //qui è il problema
+    model->insertRows(0,array.size());
+    for(int i=0;i<array.size();i++){
+        model->setData(model->index(i,0),array[i].toVariant());
+    }
 }
