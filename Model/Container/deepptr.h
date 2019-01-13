@@ -32,7 +32,10 @@ template<typename T>
 DeepPtr<T>& DeepPtr<T>::operator=(const DeepPtr& a){
     if(holding!=a.holding){
         delete holding;
-        holding=a.holding->clone();
+        if(a.holding){
+            holding=a.holding->clone();
+        }
+        else holding=nullptr;
     }
     return *this;
 }

@@ -133,8 +133,8 @@ void ContainerHandler::load(){
             }
             else{
                 QJsonDocument doc=QJsonDocument::fromJson(rawdata);
-                if(doc.isNull()){
-                    result.setText("Errore di deserializzazione. File JSON non valido");
+                if(doc.isNull() || doc.isEmpty() || !doc.array().size()){
+                    result.setText("Errore di deserializzazione. File JSON non valido o vuoto");
                 }
                 else {
                     loadInModel(doc);

@@ -360,8 +360,10 @@ void Container<T>::insert(Container<T>::iterator pos, const T & a){
     }
     pos=begin()+index;
     iterator it=end();
+    int i=0;
     for(;it!=pos;--it){
         *it=it[-1]; //forse problema qui
+        ++i;
     }
     *it=a;
     ++size_b;
