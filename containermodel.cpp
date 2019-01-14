@@ -156,8 +156,10 @@ bool ContainerModel::insertRows(int row, int count, const QModelIndex &parent){
 }
 
 bool ContainerModel::removeRows(int row, int count, const QModelIndex &parent){
-    beginRemoveRows(parent,row,row+count-1);
-    items.erase(items.begin()+row,items.begin()+row+count+1);
-    endRemoveRows();
+    if(count){
+        beginRemoveRows(parent,row,row+count-1);
+        items.erase(items.begin()+row,items.begin()+row+count);
+        endRemoveRows();
+    }
     return true;
 }

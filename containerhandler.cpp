@@ -9,7 +9,7 @@
 
 #include <QMessageBox>//debug
 
-ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerview(new QListView(this)),desc(new QLabel(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this))
+ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerview(new QListView(this)),desc(new QLabel(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this)),elimina(new QPushButton("Elimina",this))
 {
     //setup desc
     desc->setText("Nessun Oggetto Selezionato");
@@ -26,9 +26,13 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     properties->setAlignment(Qt::AlignCenter);
     //setup price
     price->setAlignment(Qt::AlignCenter);
+    //buttons
+    connect(elimina,&QPushButton::clicked,this,&ContainerHandler::eraseCurrent);
+    elimina->setHidden(true);
     //layout
     QVBoxLayout* column1=new QVBoxLayout;
     QVBoxLayout* column2=new QVBoxLayout;
+    QHBoxLayout* buttons=new QHBoxLayout;
     QHBoxLayout* layout=new QHBoxLayout;
     //view e modello
     ContainerModel* model=new ContainerModel(this);
@@ -43,6 +47,8 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     column2->addWidget(head);
     column2->addWidget(properties);
     column2->addWidget(price);
+    buttons->addWidget(elimina);
+    column2->addLayout(buttons);
     layout->addLayout(column1);
     layout->addLayout(column2);
     setLayout(layout);
@@ -58,6 +64,7 @@ void ContainerHandler::changeInfos(const QModelIndex & n,const QModelIndex &){
         head->setText("Nessuna Informazione Disponibile");
         properties->clear();
         price->clear();
+        elimina->setHidden(true);
     }
 }
 
@@ -92,6 +99,7 @@ void ContainerHandler::updateRightColumn(const QVariant& info){
     }
     properties->setText(strpro);
     price->setText("Prezzo: "+map["price"].toString());
+    elimina->setHidden(false);
 }
 
 void ContainerHandler::save(){
@@ -146,6 +154,10 @@ void ContainerHandler::load(){
     result.exec();
 }
 
+void ContainerHandler::eraseCurrent(){
+    containerview->model()->removeRows(containerview->selectionModel()->currentIndex().row(),1);
+}
+
 QByteArray ContainerHandler::getJsonParsed()const{
     int nentry=containerview->model()->rowCount();
     QJsonArray array;
@@ -158,9 +170,10 @@ QByteArray ContainerHandler::getJsonParsed()const{
 void ContainerHandler::loadInModel(const QJsonDocument& doc){
     QJsonArray array=doc.array();
     QAbstractItemModel* model=containerview->model();
-    //model->removeRows(0,model->rowCount()); //qui è il problema
+    model->removeRows(0,model->rowCount());
     model->insertRows(0,array.size());
     for(int i=0;i<array.size();i++){
+        //implementare un controllo
         model->setData(model->index(i,0),array[i].toVariant());
     }
 }
