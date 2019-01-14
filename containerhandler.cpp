@@ -6,10 +6,11 @@
 #include <QFileDialog>
 #include <QJsonObject>
 #include <QJsonArray>
+#include "addwizard.h"
 
 #include <QMessageBox>//debug
 
-ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerview(new QListView(this)),desc(new QLabel(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this)),elimina(new QPushButton("Elimina",this))
+ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerview(new QListView(this)),desc(new QLabel(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this)),elimina(new QPushButton("Elimina",this)),modifica(new QPushButton("Modifica",this))
 {
     //setup desc
     desc->setText("Nessun Oggetto Selezionato");
@@ -29,6 +30,8 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     //buttons
     connect(elimina,&QPushButton::clicked,this,&ContainerHandler::eraseCurrent);
     elimina->setHidden(true);
+    connect(modifica,&QPushButton::clicked,this,&ContainerHandler::insertormodify);
+    modifica->setHidden(true);
     //layout
     QVBoxLayout* column1=new QVBoxLayout;
     QVBoxLayout* column2=new QVBoxLayout;
@@ -48,6 +51,7 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     column2->addWidget(properties);
     column2->addWidget(price);
     buttons->addWidget(elimina);
+    buttons->addWidget(modifica);
     column2->addLayout(buttons);
     layout->addLayout(column1);
     layout->addLayout(column2);
@@ -65,6 +69,7 @@ void ContainerHandler::changeInfos(const QModelIndex & n,const QModelIndex &){
         properties->clear();
         price->clear();
         elimina->setHidden(true);
+        modifica->setHidden(true);
     }
 }
 
@@ -100,6 +105,7 @@ void ContainerHandler::updateRightColumn(const QVariant& info){
     properties->setText(strpro);
     price->setText("Prezzo: "+map["price"].toString());
     elimina->setHidden(false);
+    modifica->setHidden(false);
 }
 
 void ContainerHandler::save(){
@@ -156,6 +162,20 @@ void ContainerHandler::load(){
 
 void ContainerHandler::eraseCurrent(){
     containerview->model()->removeRows(containerview->selectionModel()->currentIndex().row(),1);
+}
+
+void ContainerHandler::insertormodify(){
+    AddWizard wizard(this);
+    int ret=wizard.exec();
+    QMessageBox* mess=new QMessageBox(this);
+    if(ret){
+        //do stuff
+        mess->setText("Operazione eseguita con successo");
+    }
+    else{
+        mess->setText("Operazione annullata");
+    }
+    mess->exec();
 }
 
 QByteArray ContainerHandler::getJsonParsed()const{

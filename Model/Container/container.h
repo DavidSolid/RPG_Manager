@@ -77,7 +77,7 @@ public:
     //operators overload
     Container& operator=(const Container&);
     Container& operator=(Container&&);
-    T& operator[](unsigned int)const;
+    T& operator[](unsigned int)const; //togli const
 
     //iterators method
     iterator begin();

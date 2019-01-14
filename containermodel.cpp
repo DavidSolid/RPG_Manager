@@ -73,7 +73,7 @@ QVariant ContainerModel::data(const QModelIndex & item,int role) const{
             map.insert("legendary",obj->isUnique());
             break;
         case 2:
-            map.insert("category",tr("Oggetto Consumabile"));
+            map.insert("category",tr("Consumabile"));
             map.insert("positive",dynamic_cast<RPGConsumable&>(*obj).isPositive());
             break;
         }

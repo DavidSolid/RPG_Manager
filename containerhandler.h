@@ -27,6 +27,7 @@ public slots:
     void save();
     void load();
     void eraseCurrent();
+    void insertormodify();
 };
 
 #endif // CONTAINERHANDLER_H
