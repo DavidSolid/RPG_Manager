@@ -7,11 +7,11 @@
 ContainerModel::ContainerModel(QObject* parent):QAbstractListModel(parent)
 {
     categories={{"weapon",0},{"armor",1},{"consumable",2}};
-    items={RPGWeapon("Frangialba","Tesoro daedrico di Meridia",true,15.1,100,true),RPGWeapon("Wuuthrad","Ascia di Ysgramor",true,60,100,false),
+    /*items={RPGWeapon("Frangialba","Tesoro daedrico di Meridia",true,15.1,100,true),RPGWeapon("Wuuthrad","Ascia di Ysgramor",true,60,100,false),
            RPGArmor("Armatura del Berserk","Gatsu enorme",true,RPGArmor::mithril,100),RPGWeapon("La mazza che non ammazza","Mazza in plastica con decorazioni di carnevale, utilizzata da Corky il clown",false,12,23,false),
           RPGArmor("Un paio di stracci","Sono dei semplici stracci, nulla di più",true,RPGArmor::mithril,1),RPGWeapon("AYYYYLMA00000", "Arma aliena che disintegra i bersagli a colpi di dubstep",false,69,99,false),
           RPGWeapon("Mazzetta di banconote", "Ora potrai sbeffeggiare i tuoi avversari facendoli sentire dei poveracci", true,18,15,false),RPGConsumable("Pozione draconica","Grazie a questo elisir potrai vedere i drachi!",5,false),
-          RPGConsumable("pozione bella","E' una pozione bella",5,true),RPGArmor("Armatura di ferro","Gatsu enorme",false,RPGArmor::iron,50)};
+          RPGConsumable("pozione bella","E' una pozione bella",5,true),RPGArmor("Armatura di ferro","Gatsu enorme",false,RPGArmor::iron,50)};*/
 }
 
 int ContainerModel::rowCount(const QModelIndex &)const{
@@ -156,8 +156,10 @@ bool ContainerModel::insertRows(int row, int count, const QModelIndex &parent){
 }
 
 bool ContainerModel::removeRows(int row, int count, const QModelIndex &parent){
-    beginRemoveRows(parent,row,row+count-1);
-    items.erase(items.begin()+row,items.begin()+row+count+1);
-    endRemoveRows();
+    if(count){
+        beginRemoveRows(parent,row,row+count-1);
+        items.erase(items.begin()+row,items.begin()+row+count);
+        endRemoveRows();
+    }
     return true;
 }

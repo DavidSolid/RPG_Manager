@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(core);
     //connections
     connect(save,SIGNAL(triggered()),core,SLOT(save()));
+    connect(carica,SIGNAL(triggered()),core,SLOT(load()));
 }
 
 MainWindow::~MainWindow()
