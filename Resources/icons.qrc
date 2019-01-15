@@ -3,5 +3,6 @@
         <file>sword.png</file>
         <file>armor.png</file>
         <file>potion.png</file>
+        <file>dragon.png</file>
     </qresource>
 </RCC>

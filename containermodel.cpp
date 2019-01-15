@@ -131,7 +131,7 @@ bool ContainerModel::setData(const QModelIndex& item, const QVariant& value, int
         QVariantMap newobj=value.toMap();
         switch(categories.at(newobj["category"].toString().toStdString())){
         case 0:
-            oldobj=RPGWeapon(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),newobj["b_damage"].toDouble(),newobj["level"].toInt(),newobj["onehanded"].toInt());
+            oldobj=RPGWeapon(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),newobj["b_damage"].toDouble(),newobj["level"].toInt(),newobj["onehanded"].toBool());
             break;
         case 1:
             oldobj=RPGArmor(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),RPGArmor::fromString(newobj["type"].toString().toStdString()),newobj["level"].toInt());
@@ -140,9 +140,10 @@ bool ContainerModel::setData(const QModelIndex& item, const QVariant& value, int
             oldobj=RPGConsumable(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["b_cost"].toDouble(),newobj["positive"].toBool());
             break;
         }
-        emit dataChanged(item,item);
         break;
+        //inserisci role SetRole;
     }
+    emit dataChanged(item,item);
     return true;
 }
 

@@ -30,7 +30,7 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     //buttons
     connect(elimina,&QPushButton::clicked,this,&ContainerHandler::eraseCurrent);
     elimina->setHidden(true);
-    connect(modifica,&QPushButton::clicked,this,&ContainerHandler::insertormodify);
+    connect(modifica,&QPushButton::clicked,this,&ContainerHandler::modify);
     modifica->setHidden(true);
     //layout
     QVBoxLayout* column1=new QVBoxLayout;
@@ -162,14 +162,40 @@ void ContainerHandler::load(){
 
 void ContainerHandler::eraseCurrent(){
     containerview->model()->removeRows(containerview->selectionModel()->currentIndex().row(),1);
+    //if(!containerview->selectionModel()->currentIndex().isValid()){
+        changeInfos(containerview->selectionModel()->currentIndex(),QModelIndex());
+    //}
 }
 
-void ContainerHandler::insertormodify(){
-    AddWizard wizard(this);
+void ContainerHandler::modify(){
+    AddWizard wizard(this,true);//true per provare. da modificare
     int ret=wizard.exec();
     QMessageBox* mess=new QMessageBox(this);
     if(ret){
         //do stuff
+        mess->setText("Operazione eseguita con successo");
+    }
+    else{
+        mess->setText("Operazione annullata");
+    }
+    mess->exec();
+}
+
+void ContainerHandler::insert(){
+    AddWizard wizard(this);
+    int ret=wizard.exec();
+    QMessageBox* mess=new QMessageBox(this);
+    if(ret){
+        QAbstractItemModel* model=containerview->model();
+        QModelIndex currentitem = containerview->selectionModel()->currentIndex();
+        if(currentitem.isValid()){
+            model->insertRows(currentitem.row(),1);
+        }
+        else{
+            model->insertRows(model->rowCount(),1);
+            currentitem=model->index(model->rowCount()-1,0);
+        }
+        model->setData(currentitem,wizard.getItemMap());
         mess->setText("Operazione eseguita con successo");
     }
     else{

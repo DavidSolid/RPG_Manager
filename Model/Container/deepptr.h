@@ -42,7 +42,9 @@ DeepPtr<T>& DeepPtr<T>::operator=(const DeepPtr& a){
 
 template<typename T>
 DeepPtr<T>& DeepPtr<T>::operator=(DeepPtr&& a){
-    delete holding;
+    if(holding){
+        delete holding;
+    }
     holding=a.holding;
     a.holding=nullptr;
     return *this;
