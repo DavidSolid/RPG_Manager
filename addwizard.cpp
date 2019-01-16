@@ -1,4 +1,5 @@
 #include "addwizard.h"
+#include "Model/rpgarmor.h"
 #include <QLabel>
 #include <QLineEdit>
 #include <QRadioButton>
@@ -47,10 +48,10 @@ QVariant AddWizard::getItemMap() const{
         out.insert("category","weapon");
         out.insert("level",field("wlevel"));
         out.insert("legendary",field("wlegendary"));
-        out.insert("onehanded",field("onehanded"));
+        out.insert("onehanded",!field("onehanded").toBool());
         out.insert("b_damage",field("damage"));
     }
-    else if(field("armor").toBool()){
+    else if(field("armor").toBool()){//da sistemare type
         out.insert("category","armor");
         out.insert("type",field("type"));
         out.insert("level",field("alevel"));
@@ -66,7 +67,8 @@ QVariant AddWizard::getItemMap() const{
 
 InitialPage::InitialPage(QWidget *parent,const QVariant& def):QWizardPage(parent){
     QVBoxLayout* layout=new QVBoxLayout;
-    setTitle("Creazione oggetto"); //cambiare in caso di def valido
+    setTitle("Creazione oggetto");
+    if(def.isValid()) setTitle("Modifica oggetto"); //mmmmm forse else
     setSubTitle("Scegli nome, descrizione e tipo di oggetto");
     QLabel* lname=new QLabel("Nome");
     QLineEdit* name=new QLineEdit(this);
@@ -88,12 +90,33 @@ InitialPage::InitialPage(QWidget *parent,const QVariant& def):QWizardPage(parent
     //if default value set
     if(def.isValid()){
         //setting default values
+        name->setText(def.toMap()["name"].toString());
+        desc->setText(def.toMap()["description"].toString());
+        QString description=def.toMap()["category"].toString();
+        if(description=="Armatura"){
+            armor->setChecked(true);
+        }
+        else if(description=="Consumabile"){
+            consumable->setChecked(true);
+        }
         //hiding type selection
         ltype->setVisible(false);
         weapon->setVisible(false);
         armor->setVisible(false);
         consumable->setVisible(false);
+        //registerfield-if-def
+        registerField("name",name);
+        registerField("description",desc);
     }
+    else{
+        //registerfields-if-not-def
+        registerField("name*",name);
+        registerField("description*",desc);
+    }
+    //registerfields
+    registerField("weapon",weapon);
+    registerField("armor",armor);
+    registerField("consumable",consumable);
     //layout set
     layout->addWidget(lname);
     layout->addWidget(name);
@@ -104,15 +127,9 @@ InitialPage::InitialPage(QWidget *parent,const QVariant& def):QWizardPage(parent
     layout->addWidget(armor);
     layout->addWidget(consumable);
     setLayout(layout);
-    //registerfields
-    registerField("name*",name);
-    registerField("description*",desc);
-    registerField("weapon",weapon);
-    registerField("armor",armor);
-    registerField("consumable",consumable);
 }
 
-ArmorPage::ArmorPage(QWidget *parent,const QVariant& old):QWizardPage(parent){
+ArmorPage::ArmorPage(QWidget *parent,const QVariant& def):QWizardPage(parent){
     QVBoxLayout* layout=new QVBoxLayout;
     setTitle("Armatura");
     setSubTitle("Scegli tipo, livello e rarità");
@@ -130,6 +147,13 @@ ArmorPage::ArmorPage(QWidget *parent,const QVariant& old):QWizardPage(parent){
     llevel->setBuddy(level);
     QCheckBox* legendary=new QCheckBox("Leggendario");
     legendary->setLayoutDirection(Qt::RightToLeft);
+    //if default value set
+    if(def.isValid()){
+        //setting default values
+        type->setCurrentIndex(RPGArmor::fromString(def.toMap()["type"].toString().toStdString()));
+        level->setValue(def.toMap()["level"].toInt());
+        legendary->setChecked(def.toMap()["legendary"].toBool());
+    }
     layout->addWidget(ltype);
     layout->addWidget(type);
     layout->addWidget(llevel);
@@ -141,7 +165,7 @@ ArmorPage::ArmorPage(QWidget *parent,const QVariant& old):QWizardPage(parent){
     registerField("alegendary",legendary);
 }
 
-WeaponPage::WeaponPage(QWidget *parent,const QVariant& old):QWizardPage(parent){
+WeaponPage::WeaponPage(QWidget *parent,const QVariant& def):QWizardPage(parent){
     QVBoxLayout* layout=new QVBoxLayout;
     QHBoxLayout* sublayout=new QHBoxLayout;
     setTitle("Arma");
@@ -159,6 +183,13 @@ WeaponPage::WeaponPage(QWidget *parent,const QVariant& old):QWizardPage(parent){
     legendary->setLayoutDirection(Qt::RightToLeft);
     QCheckBox* onehand=new QCheckBox("A due Mani");
     onehand->setLayoutDirection(Qt::RightToLeft);
+    //if def is set
+    if(def.isValid()){
+        damage->setValue(def.toMap()["b_damage"].toDouble());
+        level->setValue(def.toMap()["level"].toInt());
+        legendary->setChecked(def.toMap()["legendary"].toBool());
+        onehand->setChecked(!def.toMap()["onehanded"].toBool());
+    }
     sublayout->addWidget(legendary);
     sublayout->addWidget(onehand);
     layout->addWidget(ldamage);
@@ -173,7 +204,7 @@ WeaponPage::WeaponPage(QWidget *parent,const QVariant& old):QWizardPage(parent){
     registerField("onehanded",onehand);
 }
 
-ConsumablePage::ConsumablePage(QWidget *parent,const QVariant& old):QWizardPage(parent){
+ConsumablePage::ConsumablePage(QWidget *parent,const QVariant& def):QWizardPage(parent){
     QVBoxLayout* layout=new QVBoxLayout;
     setTitle("Consumabile");
     setSubTitle("Scegli costo di base e se l'effetto è benefico o malevolo");
@@ -184,6 +215,11 @@ ConsumablePage::ConsumablePage(QWidget *parent,const QVariant& old):QWizardPage(
     cost->setSingleStep(0.5);
     QCheckBox* positive=new QCheckBox("Effetto Positivo");
     positive->setLayoutDirection(Qt::RightToLeft);
+    //if def is set
+    if(def.isValid()){
+        cost->setValue(def.toMap()["b_cost"].toDouble());
+        positive->setChecked(def.toMap()["positive"].toBool());
+    }
     layout->addWidget(lcosto);
     layout->addWidget(cost);
     layout->addWidget(positive);

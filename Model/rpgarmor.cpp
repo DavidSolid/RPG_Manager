@@ -21,6 +21,27 @@ RPGArmor::armorclass RPGArmor::fromString(std::string s){
     //}
 }
 
+RPGArmor::armorclass RPGArmor::fromInt(int i){
+    armorclass type;
+    switch(i){
+    case 0:
+        type=wood;
+        break;
+    case 1:
+        type=bronze;
+        break;
+    case 2:
+        type=iron;
+        break;
+    case 3:
+        type=steel;
+        break;
+    default:
+        type=mithril;
+    }
+    return type;
+}
+
 RPGArmor::RPGArmor(std::string n,std::string d,bool u,armorclass t,int l):RPGItem(n,d,u),type(t),level(l){}
 
 int RPGArmor::getLevel()const{return level;}

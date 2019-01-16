@@ -13,6 +13,9 @@ public:
     double getBcost()const;
     bool isPositive()const;
 
+    void setBcost(double);
+    void setPositive(bool);
+
     std::string getCategory()const final;
     double getPrice()const override;
     RPGItem* clone()const override;

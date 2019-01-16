@@ -12,9 +12,11 @@ class ContainerModel : public QAbstractListModel
 
 public:
     enum {
-        DescriptionRole=16,
-        CompleteInfoRole=17,
-        JsonRole=18
+        //data
+        CompleteInfoRole=16,
+        JsonRole=17,
+        //setdata
+        SetRole=18
     };
 private:
     Container<DeepPtr<RPGItem>> items;

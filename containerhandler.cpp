@@ -42,6 +42,8 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     containerview->setModel(model);
     connect(containerview->selectionModel(),&QItemSelectionModel::currentChanged,
             this,&ContainerHandler::changeInfos);
+    connect(model,&QAbstractItemModel::dataChanged,
+            this,&ContainerHandler::changeInfos);
     //containerview->selectionModel()->setCurrentIndex(model->index(0), QItemSelectionModel::SelectCurrent);
     //setup layout
     column1->addWidget(containerview);
@@ -60,7 +62,7 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
 
 void ContainerHandler::changeInfos(const QModelIndex & n,const QModelIndex &){
     if(n.isValid()){
-        desc->setText(n.data(ContainerModel::DescriptionRole).toString());
+        desc->setText(n.data(ContainerModel::CompleteInfoRole).toMap()["description"].toString());
         updateRightColumn(n.data(ContainerModel::CompleteInfoRole));
     }
     else{
@@ -168,11 +170,13 @@ void ContainerHandler::eraseCurrent(){
 }
 
 void ContainerHandler::modify(){
-    AddWizard wizard(this,true);//true per provare. da modificare
+    QModelIndex current=containerview->selectionModel()->currentIndex();
+    //creating map with all values
+    AddWizard wizard(this,current.data(ContainerModel::CompleteInfoRole));
     int ret=wizard.exec();
     QMessageBox* mess=new QMessageBox(this);
     if(ret){
-        //do stuff
+        containerview->model()->setData(current,wizard.getItemMap(),ContainerModel::SetRole);
         mess->setText("Operazione eseguita con successo");
     }
     else{
@@ -196,6 +200,7 @@ void ContainerHandler::insert(){
             currentitem=model->index(model->rowCount()-1,0);
         }
         model->setData(currentitem,wizard.getItemMap());
+        containerview->selectionModel()->setCurrentIndex(currentitem,QItemSelectionModel::Current);//forse flag
         mess->setText("Operazione eseguita con successo");
     }
     else{

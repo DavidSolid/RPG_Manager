@@ -51,15 +51,15 @@ QVariant ContainerModel::data(const QModelIndex & item,int role) const{
             out=QIcon(":/potion.png");
         }*/
         break;
-    case DescriptionRole:
-        out=QString::fromStdString(items[index]->getDesc());
-        break;
     case CompleteInfoRole:{
         QVariantMap map;
         std::string category=obj->getCategory();
+        map.insert("name",QString::fromStdString(obj->getName()));
+        map.insert("description",QString::fromStdString(obj->getDesc()));
         switch(categories.at(category)){
         case 0:
             map.insert("category",tr("Arma"));
+            map.insert("b_damage",dynamic_cast<RPGWeapon&>(*obj).getBdamage());
             map.insert("damage",dynamic_cast<RPGWeapon&>(*obj).damage());
             map.insert("level",dynamic_cast<RPGWeapon&>(*obj).getLevel());
             map.insert("onehanded",dynamic_cast<RPGWeapon&>(*obj).isOneHanded());
@@ -74,6 +74,7 @@ QVariant ContainerModel::data(const QModelIndex & item,int role) const{
             break;
         case 2:
             map.insert("category",tr("Consumabile"));
+            map.insert("b_cost",dynamic_cast<RPGConsumable&>(*obj).getBcost());
             map.insert("positive",dynamic_cast<RPGConsumable&>(*obj).isPositive());
             break;
         }
@@ -126,22 +127,42 @@ QVariant ContainerModel::data(const QModelIndex & item,int role) const{
 bool ContainerModel::setData(const QModelIndex& item, const QVariant& value, int role){
     unsigned int index=static_cast<unsigned int>(item.row());
     DeepPtr<RPGItem>& oldobj=items[index];
+    QVariantMap newobj=value.toMap();
     switch(role){
     case Qt::EditRole:
-        QVariantMap newobj=value.toMap();
         switch(categories.at(newobj["category"].toString().toStdString())){
         case 0:
             oldobj=RPGWeapon(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),newobj["b_damage"].toDouble(),newobj["level"].toInt(),newobj["onehanded"].toBool());
             break;
         case 1:
-            oldobj=RPGArmor(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),RPGArmor::fromString(newobj["type"].toString().toStdString()),newobj["level"].toInt());
+            oldobj=RPGArmor(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),RPGArmor::fromInt(newobj["type"].toInt()),newobj["level"].toInt());
             break;
         case 2:
             oldobj=RPGConsumable(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["b_cost"].toDouble(),newobj["positive"].toBool());
             break;
         }
         break;
-        //inserisci role SetRole;
+    case SetRole:
+        oldobj->setName(newobj["name"].toString().toStdString());
+        oldobj->setDesc(newobj["description"].toString().toStdString());
+        switch(categories[newobj["category"].toString().toStdString()]){
+        case 0:
+            oldobj->setUnique(newobj["legendary"].toBool());
+            dynamic_cast<RPGWeapon&>(*oldobj).setBDamage(newobj["b_damage"].toDouble());
+            dynamic_cast<RPGWeapon&>(*oldobj).setLevel(newobj["level"].toInt());
+            dynamic_cast<RPGWeapon&>(*oldobj).setOneHanded(newobj["onehanded"].toBool());
+            break;
+        case 1:
+            oldobj->setUnique(newobj["legendary"].toBool());
+            dynamic_cast<RPGArmor&>(*oldobj).setLevel(newobj["level"].toInt());
+            dynamic_cast<RPGArmor&>(*oldobj).setType(RPGArmor::fromInt(newobj["type"].toInt()));
+            break;
+        case 2:
+            dynamic_cast<RPGConsumable&>(*oldobj).setBcost(newobj["b_cost"].toDouble());
+            dynamic_cast<RPGConsumable&>(*oldobj).setPositive(newobj["positive"].toBool());
+            break;
+        }
+        break;
     }
     emit dataChanged(item,item);
     return true;

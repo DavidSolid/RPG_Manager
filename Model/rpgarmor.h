@@ -20,6 +20,7 @@ private:
     static const double unique_boost;
 public:
     static armorclass fromString(std::string);
+    static armorclass fromInt(int);
     RPGArmor(std::string,std::string,bool,armorclass,int);
     std::string getType()const;
     int getLevel()const;

@@ -16,6 +16,7 @@ int RPGWeapon::getLevel()const{return level;}
 bool RPGWeapon::isOneHanded()const{return onehanded;}
 
 void RPGWeapon::setLevel(int l){level=l;}
+void RPGWeapon::setBDamage(double b){bdamage=b;}
 void RPGWeapon::setOneHanded(bool o){onehanded=o;}
 
 std::string RPGWeapon::getCategory()const{return weapon_identifier;}

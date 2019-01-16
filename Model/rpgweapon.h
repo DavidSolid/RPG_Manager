@@ -22,6 +22,7 @@ public:
     bool isOneHanded()const;
 
     void setLevel(int);
+    void setBDamage(double);
     void setOneHanded(bool);
 
     std::string getCategory()const final;
