@@ -11,6 +11,7 @@ public:
     ~DeepPtr();
     DeepPtr& operator=(const DeepPtr&);
     DeepPtr& operator=(DeepPtr&&);
+    bool isValid() const;
     T& operator*()const;
     T* operator->()const;
 };
@@ -21,7 +22,12 @@ template<typename T>
 DeepPtr<T>::DeepPtr(const T& a):holding(a.clone()){}
 
 template<typename T>
-DeepPtr<T>::DeepPtr(const DeepPtr& a):holding(a.holding->clone()){}
+DeepPtr<T>::DeepPtr(const DeepPtr& a){
+    if(a.holding){
+        holding=a.holding->clone();
+    }
+    else holding=nullptr;
+}
 
 template<typename T>
 DeepPtr<T>::~DeepPtr(){
@@ -49,6 +55,9 @@ DeepPtr<T>& DeepPtr<T>::operator=(DeepPtr&& a){
     a.holding=nullptr;
     return *this;
 }
+
+template<typename T>
+bool DeepPtr<T>::isValid() const{return holding!=nullptr;}
 
 template<typename T>
 T& DeepPtr<T>::operator*()const{return *holding;}

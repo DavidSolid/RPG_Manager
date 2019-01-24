@@ -1,5 +1,6 @@
 #include "containerhandler.h"
 #include "containermodel.h"
+#include "searchproxy.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDataWidgetMapper>
@@ -8,10 +9,15 @@
 #include <QJsonArray>
 #include "addwizard.h"
 
+#include <QLineEdit>
+
 #include <QMessageBox>//debug
 
 ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerview(new QListView(this)),desc(new QLabel(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this)),elimina(new QPushButton("Elimina",this)),modifica(new QPushButton("Modifica",this))
 {
+    //setup search
+    QLineEdit* bar=new QLineEdit;
+    /*QCheckBox*/
     //setup desc
     desc->setText("Nessun Oggetto Selezionato");
     QLabel* deschead=new QLabel(this);
@@ -33,19 +39,26 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     connect(modifica,&QPushButton::clicked,this,&ContainerHandler::modify);
     modifica->setHidden(true);
     //layout
+    QHBoxLayout* search=new QHBoxLayout;
     QVBoxLayout* column1=new QVBoxLayout;
     QVBoxLayout* column2=new QVBoxLayout;
     QHBoxLayout* buttons=new QHBoxLayout;
-    QHBoxLayout* layout=new QHBoxLayout;
+    QHBoxLayout* hlayout=new QHBoxLayout;
+    QVBoxLayout* layout=new QVBoxLayout;
     //view e modello
     ContainerModel* model=new ContainerModel(this);
-    containerview->setModel(model);
+    SearchProxy* proxy=new SearchProxy(bar,this);
+    proxy->setSourceModel(model);
+    containerview->setModel(proxy);
     connect(containerview->selectionModel(),&QItemSelectionModel::currentChanged,
             this,&ContainerHandler::changeInfos);
-    connect(model,&QAbstractItemModel::dataChanged,
+    connect(proxy,&QAbstractItemModel::dataChanged,
             this,&ContainerHandler::changeInfos);
+
+    connect(bar,&QLineEdit::textChanged,proxy,&QSortFilterProxyModel::invalidate);
     //containerview->selectionModel()->setCurrentIndex(model->index(0), QItemSelectionModel::SelectCurrent);
     //setup layout
+    search->addWidget(bar);
     column1->addWidget(containerview);
     column1->addWidget(deschead);
     column1->addWidget(desc);
@@ -55,8 +68,10 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     buttons->addWidget(elimina);
     buttons->addWidget(modifica);
     column2->addLayout(buttons);
-    layout->addLayout(column1);
-    layout->addLayout(column2);
+    hlayout->addLayout(column1);
+    hlayout->addLayout(column2);
+    layout->addLayout(search);
+    layout->addLayout(hlayout);
     setLayout(layout);
 }
 
@@ -190,17 +205,17 @@ void ContainerHandler::insert(){
     int ret=wizard.exec();
     QMessageBox* mess=new QMessageBox(this);
     if(ret){
-        QAbstractItemModel* model=containerview->model();
-        QModelIndex currentitem = containerview->selectionModel()->currentIndex();
+        QAbstractItemModel* model=dynamic_cast<QSortFilterProxyModel*>(containerview->model())->sourceModel();
+        QModelIndex currentitem = containerview->selectionModel()->currentIndex();//map
         if(currentitem.isValid()){
             model->insertRows(currentitem.row(),1);
         }
         else{
             model->insertRows(model->rowCount(),1);
-            currentitem=model->index(model->rowCount()-1,0);
+            currentitem=model->index(model->rowCount()-1,0);//map
         }
         model->setData(currentitem,wizard.getItemMap());
-        containerview->selectionModel()->setCurrentIndex(currentitem,QItemSelectionModel::Current);//forse flag
+        //containerview->selectionModel()->setCurrentIndex(currentitem,QItemSelectionModel::ClearAndSelect/*Current*/);
         mess->setText("Operazione eseguita con successo");
     }
     else{
@@ -220,11 +235,11 @@ QByteArray ContainerHandler::getJsonParsed()const{
 
 void ContainerHandler::loadInModel(const QJsonDocument& doc){
     QJsonArray array=doc.array();
-    QAbstractItemModel* model=containerview->model();
+    QAbstractItemModel* model=dynamic_cast<QSortFilterProxyModel*>(containerview->model())->sourceModel();
     model->removeRows(0,model->rowCount());
     model->insertRows(0,array.size());
     for(int i=0;i<array.size();i++){
         //implementare un controllo
-        model->setData(model->index(i,0),array[i].toVariant());
+        model->setData(model->index(i,0),array[i].toVariant());//map
     }
 }

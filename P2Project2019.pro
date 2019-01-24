@@ -33,7 +33,9 @@ SOURCES += \
     Model/rpgweapon.cpp \
     containermodel.cpp \
     containerhandler.cpp \
-    addwizard.cpp
+    addwizard.cpp \
+    searchproxy.cpp \
+    Model/Container/rpgcontainer.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,7 +47,9 @@ HEADERS += \
     Model/rpgweapon.h \
     containermodel.h \
     containerhandler.h \
-    addwizard.h
+    addwizard.h \
+    searchproxy.h \
+    Model/Container/rpgcontainer.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

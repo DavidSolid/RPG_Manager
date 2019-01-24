@@ -125,7 +125,7 @@ QVariant ContainerModel::data(const QModelIndex & item,int role) const{
 }*/
 
 bool ContainerModel::setData(const QModelIndex& item, const QVariant& value, int role){
-    unsigned int index=static_cast<unsigned int>(item.row());
+    unsigned int index=static_cast<unsigned int>(item.row()); //neg. -1
     DeepPtr<RPGItem>& oldobj=items[index];
     QVariantMap newobj=value.toMap();
     switch(role){
@@ -184,4 +184,11 @@ bool ContainerModel::removeRows(int row, int count, const QModelIndex &parent){
         endRemoveRows();
     }
     return true;
+}
+
+bool ContainerModel::validateRow(int row, QString wildcardname, const QModelIndex & parent) const{
+    RPGContainer found=items.searchWildcardName(wildcardname.toStdString());
+    DeepPtr<RPGItem> tovalidate=items[static_cast<unsigned int>(row)];
+    return std::find_if(found.cbegin(),found.cend(),[tovalidate](DeepPtr<RPGItem> a){return a->getName()==tovalidate->getName();})!=found.cend();
+
 }

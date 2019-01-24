@@ -56,6 +56,12 @@ public:
         const T* owned;
         const_iterator(const T*);
     public:
+        typedef const T value_type;
+        typedef std::ptrdiff_t difference_type;
+        typedef const T& reference;
+        typedef const T* pointer;
+        typedef std::input_iterator_tag iterator_category; //forse da cambiare in seguito
+
         const T& operator*()const;
         const T& operator[](unsigned int)const;
         const T* operator->();
@@ -65,7 +71,8 @@ public:
         const_iterator operator--();
         const_iterator operator--(int);
 
-        bool operator !=(const const_iterator&);
+        bool operator !=(const const_iterator&)const;
+        bool operator ==(const const_iterator&)const;
     };
     //Constructor and Destructor
     Container();
@@ -238,8 +245,13 @@ typename Container<T>::const_iterator Container<T>::const_iterator::operator--(i
 }
 
 template<typename T>
-bool Container<T>::const_iterator::operator!=(const const_iterator & a){
+bool Container<T>::const_iterator::operator!=(const const_iterator & a)const{
     return owned!=a.owned;
+}
+
+template<typename T>
+bool Container<T>::const_iterator::operator==(const const_iterator & a)const{
+    return owned==a.owned;
 }
 
 //container constructor and destructor methods definition

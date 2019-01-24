@@ -4,6 +4,7 @@
 #include <Model/Container/container.h>
 #include <Model/Container/deepptr.h>
 #include <Model/rpgitem.h>
+#include "Model/Container/rpgcontainer.h"
 #include <map>
 
 class ContainerModel : public QAbstractListModel
@@ -19,7 +20,8 @@ public:
         SetRole=18
     };
 private:
-    Container<DeepPtr<RPGItem>> items;
+    /*Container<DeepPtr<RPGItem>> items;*/
+    RPGContainer items;
     std::map<std::string,int> categories;
 
 public:
@@ -30,6 +32,8 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+
+    bool validateRow(int row,QString,const QModelIndex&) const;
 };
 
 #endif // CONTAINERMODEL_H
