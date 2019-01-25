@@ -56,6 +56,7 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
             this,&ContainerHandler::changeInfos);
 
     connect(bar,&QLineEdit::textChanged,proxy,&QSortFilterProxyModel::invalidate);
+    connect(bar,&QLineEdit::textChanged,this,&ContainerHandler::afterFilterInfo);
     //containerview->selectionModel()->setCurrentIndex(model->index(0), QItemSelectionModel::SelectCurrent);
     //setup layout
     search->addWidget(bar);
@@ -73,6 +74,10 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     layout->addLayout(search);
     layout->addLayout(hlayout);
     setLayout(layout);
+}
+
+void ContainerHandler::afterFilterInfo(){
+    changeInfos(containerview->selectionModel()->currentIndex());
 }
 
 void ContainerHandler::changeInfos(const QModelIndex & n,const QModelIndex &){

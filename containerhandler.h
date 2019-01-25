@@ -23,7 +23,8 @@ public:
 signals:
 
 public slots:
-    void changeInfos(const QModelIndex &,const QModelIndex &);
+    void afterFilterInfo();
+    void changeInfos(const QModelIndex &,const QModelIndex & =QModelIndex());
     void save();
     void load();
     void eraseCurrent();
