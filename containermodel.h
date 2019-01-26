@@ -33,7 +33,7 @@ public:
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 
-    bool validateRow(int row,QString,const QModelIndex&) const;
+    bool validateRow(int row,QString,bool,bool,bool,const QModelIndex&) const;
 };
 
 #endif // CONTAINERMODEL_H

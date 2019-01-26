@@ -8,9 +8,11 @@ class RPGContainer : public Container<DeepPtr<RPGItem>>
 {
 public:
     RPGContainer();
+    RPGContainer(const Container<DeepPtr<RPGItem>>&);
     RPGContainer(std::initializer_list<DeepPtr<RPGItem>>);
 
     RPGContainer searchWildcardName(std::string) const;
+    RPGContainer searchAllByType(bool,bool,bool) const;
 };
 
 #endif // RPGCONTAINER_H

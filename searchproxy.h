@@ -2,6 +2,7 @@
 #define SEARCHPROXY_H
 #include <QSortFilterProxyModel>
 #include <QLineEdit>
+#include <QCheckBox>
 
 class SearchProxy : public QSortFilterProxyModel
 {
@@ -9,8 +10,9 @@ class SearchProxy : public QSortFilterProxyModel
 
 private:
     QLineEdit* filter;
+    QCheckBox *weapon,*armor,*consumable;
 public:
-    SearchProxy(QLineEdit*,QObject* =nullptr);
+    SearchProxy(QLineEdit*,QCheckBox*,QCheckBox*,QCheckBox*,QObject* =nullptr);
     bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
 };
 

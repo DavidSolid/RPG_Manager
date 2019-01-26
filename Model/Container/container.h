@@ -102,6 +102,7 @@ public:
     void insert(iterator,const T&);
     iterator erase(iterator);
     iterator erase(iterator,iterator);
+    Container<T> search(std::function<bool(const T&)>) const;
     void sort(std::function<bool(const T&,const T&)>);
 
     //data methods
@@ -396,6 +397,18 @@ typename Container<T>::iterator Container<T>::erase(Container<T>::iterator i, Co
     size_b-=f-i;
     return out;
 }
+
+template<typename T>
+Container<T> Container<T>::search(std::function<bool(const T&)> foo) const{
+    Container<T> out;
+    auto it=std::find_if(cbegin(),cend(),foo);
+    while(it!=cend()){
+        out.push_back(*it);
+        it=std::find_if(++it,cend(),foo);
+    }
+    return out;
+}
+
 template<typename T>
 void Container<T>::sort(std::function<bool(const T&, const T&)> foo){
     std::stable_sort(begin(), end(), foo);

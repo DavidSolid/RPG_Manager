@@ -186,9 +186,11 @@ bool ContainerModel::removeRows(int row, int count, const QModelIndex &parent){
     return true;
 }
 
-bool ContainerModel::validateRow(int row, QString wildcardname, const QModelIndex & parent) const{
-    RPGContainer found=items.searchWildcardName(wildcardname.toStdString());
+bool ContainerModel::validateRow(int row, QString wildcardname, bool w, bool a, bool c, const QModelIndex &) const{
+    RPGContainer foundbyname=items.searchWildcardName(wildcardname.toStdString());
     DeepPtr<RPGItem> tovalidate=items[static_cast<unsigned int>(row)];
-    return std::find_if(found.cbegin(),found.cend(),[tovalidate](DeepPtr<RPGItem> a){return a->getName()==tovalidate->getName();})!=found.cend();
+    RPGContainer foundbytype=items.searchAllByType(w,a,c);
+    return std::find_if(foundbyname.cbegin(),foundbyname.cend(),[tovalidate](DeepPtr<RPGItem> a){return a->getName()==tovalidate->getName();})!=foundbyname.cend()
+    && std::find_if(foundbytype.cbegin(),foundbytype.cend(),[tovalidate](DeepPtr<RPGItem> a)->bool{return a->getName()==tovalidate->getName() && a->getCategory()==tovalidate->getCategory();})!=foundbytype.cend();
 
 }

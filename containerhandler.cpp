@@ -10,6 +10,7 @@
 #include "addwizard.h"
 
 #include <QLineEdit>
+#include <QCheckBox>
 
 #include <QMessageBox>//debug
 
@@ -17,7 +18,15 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
 {
     //setup search
     QLineEdit* bar=new QLineEdit;
-    /*QCheckBox*/
+    QCheckBox* armi=new QCheckBox("Armi");
+    QCheckBox* armor=new QCheckBox("Armature");
+    QCheckBox* cons=new QCheckBox("Consumabili");
+    armi->setChecked(true);
+    armor->setChecked(true);
+    cons->setChecked(true);
+    armi->setLayoutDirection(Qt::RightToLeft);
+    armor->setLayoutDirection(Qt::RightToLeft);
+    cons->setLayoutDirection(Qt::RightToLeft);
     //setup desc
     desc->setText("Nessun Oggetto Selezionato");
     QLabel* deschead=new QLabel(this);
@@ -47,7 +56,7 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     QVBoxLayout* layout=new QVBoxLayout;
     //view e modello
     ContainerModel* model=new ContainerModel(this);
-    SearchProxy* proxy=new SearchProxy(bar,this);
+    SearchProxy* proxy=new SearchProxy(bar,armi,armor,cons,this);
     proxy->setSourceModel(model);
     containerview->setModel(proxy);
     connect(containerview->selectionModel(),&QItemSelectionModel::currentChanged,
@@ -57,9 +66,18 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
 
     connect(bar,&QLineEdit::textChanged,proxy,&QSortFilterProxyModel::invalidate);
     connect(bar,&QLineEdit::textChanged,this,&ContainerHandler::afterFilterInfo);
+    connect(armi,&QCheckBox::toggled,proxy,&QSortFilterProxyModel::invalidate);
+    connect(armi,&QCheckBox::toggled,this,&ContainerHandler::afterFilterInfo);
+    connect(armor,&QCheckBox::toggled,proxy,&QSortFilterProxyModel::invalidate);
+    connect(armor,&QCheckBox::toggled,this,&ContainerHandler::afterFilterInfo);
+    connect(cons,&QCheckBox::toggled,proxy,&QSortFilterProxyModel::invalidate);
+    connect(cons,&QCheckBox::toggled,this,&ContainerHandler::afterFilterInfo);
     //containerview->selectionModel()->setCurrentIndex(model->index(0), QItemSelectionModel::SelectCurrent);
     //setup layout
     search->addWidget(bar);
+    search->addWidget(armi);
+    search->addWidget(armor);
+    search->addWidget(cons);
     column1->addWidget(containerview);
     column1->addWidget(deschead);
     column1->addWidget(desc);
