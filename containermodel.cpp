@@ -190,7 +190,17 @@ bool ContainerModel::validateRow(int row, QString wildcardname, bool w, bool a, 
     RPGContainer foundbyname=items.searchWildcardName(wildcardname.toStdString());
     DeepPtr<RPGItem> tovalidate=items[static_cast<unsigned int>(row)];
     RPGContainer foundbytype=items.searchAllByType(w,a,c);
-    return std::find_if(foundbyname.cbegin(),foundbyname.cend(),[tovalidate](DeepPtr<RPGItem> a){return a->getName()==tovalidate->getName();})!=foundbyname.cend()
-    && std::find_if(foundbytype.cbegin(),foundbytype.cend(),[tovalidate](DeepPtr<RPGItem> a)->bool{return a->getName()==tovalidate->getName() && a->getCategory()==tovalidate->getCategory();})!=foundbytype.cend();
+    return std::find_if(foundbyname.cbegin(),foundbyname.cend(),[tovalidate](DeepPtr<RPGItem> a){
+        if(tovalidate.isValid()){
+            return a->getName()==tovalidate->getName();
+        }
+        else return false;
+    })!=foundbyname.cend()
+    && std::find_if(foundbytype.cbegin(),foundbytype.cend(),[tovalidate](DeepPtr<RPGItem> a)->bool{
+        if(tovalidate.isValid()){
+            return a->getName()==tovalidate->getName() && a->getCategory()==tovalidate->getCategory();
+        }
+        else return false;
+    })!=foundbytype.cend();
 
 }
