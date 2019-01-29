@@ -257,7 +257,7 @@ bool Container<T>::const_iterator::operator==(const const_iterator & a)const{
 
 //container constructor and destructor methods definition
 template<typename T>
-Container<T>::Container() :buffer(0), capacity_b(0), size_b(0) {}
+Container<T>::Container() :buffer(new T[1]), capacity_b(1), size_b(0) {}
 
 template<typename T>
 Container<T>::Container(std::initializer_list<T> il):capacity_b(pow(2,ceil(log2(il.size())))),size_b(il.size()){
