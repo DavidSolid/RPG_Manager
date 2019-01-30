@@ -135,7 +135,14 @@ bool ContainerModel::setData(const QModelIndex& item, const QVariant& value, int
             oldobj=RPGWeapon(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),newobj["b_damage"].toDouble(),newobj["level"].toInt(),newobj["onehanded"].toBool());
             break;
         case 1:
-            oldobj=RPGArmor(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),RPGArmor::fromInt(newobj["type"].toInt()),newobj["level"].toInt());
+            RPGArmor::armorclass type;
+            if(newobj["type"].type()==QMetaType::Int){
+                type=RPGArmor::fromInt(newobj["type"].toInt());
+            }
+            else{
+                type=RPGArmor::fromString(newobj["type"].toString().toStdString());
+            }
+            oldobj=RPGArmor(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["legendary"].toBool(),type,newobj["level"].toInt());
             break;
         case 2:
             oldobj=RPGConsumable(newobj["name"].toString().toStdString(),newobj["description"].toString().toStdString(),newobj["b_cost"].toDouble(),newobj["positive"].toBool());
