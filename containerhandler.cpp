@@ -29,6 +29,7 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     cons->setLayoutDirection(Qt::RightToLeft);
     //setup desc
     desc->setText("Nessun Oggetto Selezionato");
+    desc->setWordWrap(true);
     QLabel* deschead=new QLabel(this);
     deschead->setText("Descrizione");
     deschead->setStyleSheet("font-weight: bold;");
@@ -113,11 +114,30 @@ void ContainerHandler::changeInfos(const QModelIndex & n,const QModelIndex &){
     }
 }
 
+QString ContainerHandler::translate(const QString & a){
+    if(a=="wood"){
+        return "legno";
+    }
+    if(a=="bronze"){
+        return "bronzo";
+    }
+    if(a=="iron"){
+        return "ferro";
+    }
+    if(a=="steel"){
+        return "acciaio";
+    }
+    if(a=="mithril"){
+        return a;
+    }
+    else return "materiale sconosciuto";
+}
+
 void ContainerHandler::updateRightColumn(const QVariant& info){
     const QVariantMap map=info.toMap();
     QString strhead=map["category"].toString();
     if(map["type"].isValid()){
-        strhead+=" di "+map["type"].toString();
+        strhead+=" di "+translate(map["type"].toString());
     }
     if(map["legendary"].isValid()){
         strhead+=" ";

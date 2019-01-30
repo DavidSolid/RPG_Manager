@@ -16,6 +16,7 @@ private:
     QPushButton *elimina,*modifica;
 
     void updateRightColumn(const QVariant&);
+    static QString translate(const QString &);
 public:
     ContainerHandler(QWidget *parent = nullptr);
     QByteArray getJsonParsed()const;
