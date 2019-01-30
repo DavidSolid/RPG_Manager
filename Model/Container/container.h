@@ -28,7 +28,7 @@ public:
         typedef std::random_access_iterator_tag iterator_category;
 
         reference operator*()const;
-        reference operator[](unsigned int)const;
+        reference operator[](int)const;
         pointer operator->() const;
 
         iterator& operator++();
@@ -117,7 +117,7 @@ template<typename T>
 typename Container<T>::iterator::reference Container<T>::iterator::operator*()const { return *owned; }
 
 template<typename T>
-typename Container<T>::iterator::reference Container<T>::iterator::operator[](unsigned int n)const { return *(owned + n); }
+typename Container<T>::iterator::reference Container<T>::iterator::operator[](int n)const { return *(owned + n); }
 
 template<typename T>
 typename Container<T>::iterator::pointer Container<T>::iterator::operator->()const { return owned; }
