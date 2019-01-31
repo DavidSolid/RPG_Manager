@@ -17,10 +17,11 @@ private:
 
     void updateRightColumn(const QVariant&);
     static QString translate(const QString &);
+    static bool validateInputArray(const QJsonArray &);
 public:
     ContainerHandler(QWidget *parent = nullptr);
     QByteArray getJsonParsed()const;
-    void loadInModel(const QJsonDocument&);
+    bool loadInModel(const QJsonDocument&);
 signals:
 
 public slots:

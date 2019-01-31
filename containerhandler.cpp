@@ -193,7 +193,7 @@ void ContainerHandler::load(){
     QMessageBox result;
     QString filename=QFileDialog::getOpenFileName(this,"Scegli file da cui caricare","","Json file (*.json)");
     if(filename.isEmpty() || filename.isNull()){
-        result.setText("Impossibile salvare. Nessun File selezionato");
+        result.setText("Impossibile caricare. Nessun File selezionato");
     }
     else{
         QFile file(filename);
@@ -211,8 +211,10 @@ void ContainerHandler::load(){
                     result.setText("Errore di deserializzazione. File JSON non valido o vuoto");
                 }
                 else {
-                    loadInModel(doc);
-                    result.setText("File caricato correttamente");
+                    if(loadInModel(doc)){
+                        result.setText("File caricato correttamente");
+                    }
+                    else result.setText("Caricamento annullato. Uno o più oggetti non riconosciuti");
                 }
             }
         }
@@ -276,13 +278,62 @@ QByteArray ContainerHandler::getJsonParsed()const{
     return QJsonDocument(array).toJson();
 }
 
-void ContainerHandler::loadInModel(const QJsonDocument& doc){
+bool ContainerHandler::validateInputArray(const QJsonArray & array){
+    for(int i=0;i<array.size();++i){
+        QVariantMap object=array[i].toVariant().toMap();
+        QVariant name=object.value("name");
+        QVariant desc=object.value("description");
+        QVariant category=object.value("category");
+        if(name.isValid() && name.type()==QMetaType::QString &&
+                desc.isValid() && desc.type()==QMetaType::QString &&
+                category.isValid() && category.type()==QMetaType::QString &&
+                (category.toString()=="weapon" || category.toString()=="armor" || category.toString()=="consumable")){
+            if(category.toString()=="weapon" || category.toString()=="armor"){
+                QVariant legendary=object.value("legendary");
+                QVariant level=object.value("level");
+                if(legendary.isValid() && legendary.type()==QMetaType::Bool &&
+                        level.isValid() && level.type()==QMetaType::Double &&
+                        level.toInt()>0 && level.toInt()<=100){
+                    if(category.toString()=="weapon"){
+                        QVariant damage=object.value("b_damage");
+                        QVariant one=object.value("onehanded");
+                        if(damage.isValid() && damage.type()==QMetaType::Double &&
+                                damage.toDouble()>0 && one.isValid() && one.type()==QMetaType::Bool){}
+                        else return false;
+                    }
+                    if(category.toString()=="armor"){
+                        QVariant type=object.value("type");
+                        if(type.isValid() && type.type()==QMetaType::QString &&
+                                (type.toString()=="wood" || type.toString()=="bronze" ||
+                                type.toString()=="iron" || type.toString()=="steel" ||
+                                type.toString()=="mithril")){}
+                        else return false;
+                    }
+                }
+                else return false;
+            }
+            if(category.toString()=="consumable"){
+                QVariant cost=object.value("b_cost");
+                QVariant positive=object.value("positive");
+                if(cost.isValid() && cost.type()==QMetaType::Double &&
+                        cost.toDouble()>0 && positive.isValid() &&
+                        positive.type()==QMetaType::Bool){}
+                else return false;
+            }
+        }
+        else return false;
+    }
+    return true;
+}
+
+bool ContainerHandler::loadInModel(const QJsonDocument& doc){
     QJsonArray array=doc.array();
+    if(!validateInputArray(array)) return false;
     QAbstractItemModel* model=dynamic_cast<QSortFilterProxyModel*>(containerview->model())->sourceModel();
     model->removeRows(0,model->rowCount());
     model->insertRows(0,array.size());
     for(int i=0;i<array.size();i++){
-        //implementare un controllo
         model->setData(model->index(i,0),array[i].toVariant());//map
     }
+    return true;
 }
