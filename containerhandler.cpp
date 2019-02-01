@@ -14,13 +14,14 @@
 
 #include <QMessageBox>//debug
 
-ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerview(new QListView(this)),desc(new QLabel(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this)),elimina(new QPushButton("Elimina",this)),modifica(new QPushButton("Modifica",this))
+ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerview(new QListView(this)),desc(new QTextEdit(this)),head(new QLabel(this)),properties(new QLabel(this)),price(new QLabel(this)),elimina(new QPushButton("Elimina",this)),modifica(new QPushButton("Modifica",this))
 {
     //setup search
     QLineEdit* bar=new QLineEdit;
     QCheckBox* armi=new QCheckBox("Armi");
     QCheckBox* armor=new QCheckBox("Armature");
     QCheckBox* cons=new QCheckBox("Consumabili");
+    bar->setPlaceholderText("Cerca...");
     armi->setChecked(true);
     armor->setChecked(true);
     cons->setChecked(true);
@@ -29,7 +30,9 @@ ContainerHandler::ContainerHandler(QWidget *parent) : QWidget(parent),containerv
     cons->setLayoutDirection(Qt::RightToLeft);
     //setup desc
     desc->setText("Nessun Oggetto Selezionato");
-    desc->setWordWrap(true);
+    desc->setReadOnly(true);
+    desc->setMinimumHeight(30);
+    desc->setMaximumHeight(100);
     QLabel* deschead=new QLabel(this);
     deschead->setText("Descrizione");
     deschead->setStyleSheet("font-weight: bold;");
@@ -270,10 +273,11 @@ void ContainerHandler::insert(){
 }
 
 QByteArray ContainerHandler::getJsonParsed()const{
-    int nentry=containerview->model()->rowCount();
+    QAbstractItemModel* mod=dynamic_cast<QSortFilterProxyModel*>(containerview->model())->sourceModel();
+    int nentry=mod->rowCount();
     QJsonArray array;
     for(int i=0;i<nentry;i++){
-        array.append(QJsonObject::fromVariantMap(containerview->model()->index(i,0).data(ContainerModel::JsonRole).toMap()));
+        array.append(QJsonObject::fromVariantMap(mod->index(i,0).data(ContainerModel::JsonRole).toMap()));
     }
     return QJsonDocument(array).toJson();
 }

@@ -5,6 +5,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    resize(600,400);
     //menù
     QMenuBar* menu=new QMenuBar;
     QMenu* submenu=menu->addMenu("File");

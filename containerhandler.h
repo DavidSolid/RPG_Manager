@@ -6,13 +6,15 @@
 #include <QListView>
 #include <QJsonDocument>
 #include <QPushButton>
+#include <QTextEdit>
 
 class ContainerHandler : public QWidget
 {
     Q_OBJECT
 private:
     QListView* containerview;
-    QLabel *desc,*head,*properties,*price;
+    QTextEdit* desc;
+    QLabel *head,*properties,*price;
     QPushButton *elimina,*modifica;
 
     void updateRightColumn(const QVariant&);
