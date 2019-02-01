@@ -9,6 +9,6 @@ void RPGConsumable::setBcost(double b){bcost=b;}
 void RPGConsumable::setPositive(bool p){positive=p;}
 
 std::string RPGConsumable::getCategory()const{return "consumable";}
-double RPGConsumable::getPrice()const{return bcost;}
+double RPGConsumable::getPrice()const{return positive?bcost:3*bcost;}
 
 RPGItem* RPGConsumable::clone()const{return new RPGConsumable(*this);}

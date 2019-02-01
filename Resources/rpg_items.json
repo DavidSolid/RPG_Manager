@@ -1,0 +1,214 @@
+[
+    {
+        "b_damage": 110,
+        "category": "weapon",
+        "description": "Questa e' la spada estratta da re Artu', la leggenda narra che fosse in grado di tagliare l'acciaio",
+        "legendary": true,
+        "level": 99,
+        "name": "excalibur",
+        "onehanded": false
+    },
+    {
+        "b_damage": 18,
+        "category": "weapon",
+        "description": "Pesante arma contundente a due mani, la sua lunghezza permette di evitare il contatto diretto con il nemico",
+        "legendary": false,
+        "level": 3,
+        "name": "alabarda",
+        "onehanded": false
+    },
+    {
+        "b_damage": 18,
+        "category": "weapon",
+        "description": "A differenza dell'arco puo' essere caricata con frecce di metallo, in grado di penetrare le armature di legno, bronzo e ferro",
+        "legendary": false,
+        "level": 3,
+        "name": "balestra",
+        "onehanded": false
+    },
+    {
+        "b_damage": 17,
+        "category": "weapon",
+        "description": "Arco in legno, puo' scagliare frecce ad una distanza di 50 metri",
+        "legendary": false,
+        "level": 2,
+        "name": "arco",
+        "onehanded": false
+    },
+    {
+        "b_damage": 75,
+        "category": "weapon",
+        "description": "Pugnale magico che dona a chi lo possiede il controllo completo del tempo",
+        "legendary": true,
+        "level": 97,
+        "name": "pugnale del tempo",
+        "onehanded": true
+    },
+    {
+        "b_damage": 8,
+        "category": "weapon",
+        "description": "Questa spada rappresenta la perfetta via di mezzo tra una spada lunga e un pugnale, e' resistente e utilizzabile con una mano",
+        "legendary": false,
+        "level": 1,
+        "name": "spada corta",
+        "onehanded": true
+    },
+    {
+        "b_damage": 20,
+        "category": "weapon",
+        "description": "Spada utilizzata dai templari",
+        "legendary": false,
+        "level": 1,
+        "name": "spada lunga",
+        "onehanded": false
+    },
+    {
+        "b_damage": 15,
+        "category": "weapon",
+        "description": "Antica spada giapponese, con una lama estremamente affilata ma molto sottile, bisogna essere esperti per utilizzarla al meglio",
+        "legendary": false,
+        "level": 7,
+        "name": "katana",
+        "onehanded": false
+    },
+    {
+        "b_damage": 14,
+        "category": "weapon",
+        "description": "Arma molto pesante a due mani, e' efficace contro nemici corazzati",
+        "legendary": false,
+        "level": 3,
+        "name": "mazza chiodata",
+        "onehanded": false
+    },
+    {
+        "b_damage": 4,
+        "category": "weapon",
+        "description": "Tirapugni in ottone, solitamente usato nei combattimenti che si svolgono nelle locande",
+        "legendary": false,
+        "level": 1,
+        "name": "tirapugni",
+        "onehanded": true
+    },
+    {
+        "b_damage": 6,
+        "category": "weapon",
+        "description": "Classico pugnale con una lama lunga 9 cm, la sua portatilita' la rende un'ottima arma secondaria",
+        "legendary": false,
+        "level": 1,
+        "name": "pugnale in bronzo",
+        "onehanded": true
+    },
+    {
+        "category": "armor",
+        "description": "Corazza di base che protegge il torso, non e' molto resistente ma la sua leggerezza la rende adatta a chi non ha esperienza sul campo di battaglia.",
+        "legendary": false,
+        "level": 1,
+        "name": "armatura in legno",
+        "type": "wood"
+    },
+    {
+        "category": "armor",
+        "description": "Scudo di forma rotonda abbastanza maneggevole",
+        "legendary": false,
+        "level": 4,
+        "name": "scudo di bronzo",
+        "type": "bronze"
+    },
+    {
+        "category": "armor",
+        "description": "E' uno scudo in ferro, apparentemente nulla di speciale, ma le leggende narrano che sia stato costruito da Mastrota",
+        "legendary": true,
+        "level": 11,
+        "name": "scudo di ferro",
+        "type": "iron"
+    },
+    {
+        "category": "armor",
+        "description": "solitamente utilizzato dalla famiglia reale, in quanto e' realizzato di mithril, materiale molto raro, molto leggero e incredibilmente resistente",
+        "legendary": true,
+        "level": 77,
+        "name": "scudo di mithril",
+        "type": "mithril"
+    },
+    {
+        "category": "armor",
+        "description": "Scudo pesante in acciaio, in grado di proteggere completamente il corpo. La sua forma permette alla fanteria di avanzare evitando le frecce scagliate dai nemici",
+        "legendary": false,
+        "level": 30,
+        "name": "scudo dei legionari di Morrowind",
+        "type": "steel"
+    },
+    {
+        "category": "armor",
+        "description": "Elmo discreto, e' piu' semplice da realizzare rispetto ad un elmo di acciaio pero' e' piu' pesante",
+        "legendary": false,
+        "level": 20,
+        "name": "elmo di ferro",
+        "type": "iron"
+    },
+    {
+        "category": "armor",
+        "description": "Elmo pesante, e' molto difficile scalfirlo con una comune spada ma e' molto pesante",
+        "legendary": false,
+        "level": 23,
+        "name": "elmo di acciaio",
+        "type": "steel"
+    },
+    {
+        "category": "armor",
+        "description": "Elmo fabbricato secoli fa per il primo re dell'impero di Tamriel, viene tramantato da allora ",
+        "legendary": true,
+        "level": 100,
+        "name": "elmo del re di Tamriel",
+        "type": "mithril"
+    },
+    {
+        "b_cost": 27,
+        "category": "consumable",
+        "description": "Questa pozione aumenta temporaneamente la velocita' degli attacchi e riduce notevolmente il tempo di reazione",
+        "name": "pozione coda di lucertola",
+        "positive": true
+    },
+    {
+        "b_cost": 40,
+        "category": "consumable",
+        "description": "Il consumo di questo fungo comporta l'aggiunta di una vita extra",
+        "name": "Fungo porcino verde",
+        "positive": true
+    },
+    {
+        "b_cost": 23,
+        "category": "consumable",
+        "description": "Questo antidoto e, in grado di curare avvelenamenti causati da un veleno comune",
+        "name": "antidoto base",
+        "positive": true
+    },
+    {
+        "b_cost": 90,
+        "category": "consumable",
+        "description": "Aumenta l'intelligenza e l'agilita' di 10 punti",
+        "name": "anima di  Sun Tzu",
+        "positive": true
+    },
+    {
+        "b_cost": 500,
+        "category": "consumable",
+        "description": "Questa pozione e' ottenuta dalla sintesi di tre erbe molto rare che crescono ogni tre anni. Ne bastano poche gocce per far cadere un uomo adulto in un sonno molto profondo",
+        "name": "pozione del sonno profondo",
+        "positive": false
+    },
+    {
+        "b_cost": 18,
+        "category": "consumable",
+        "description": "Questa pozione aumenta temporaneamente la resistenza e la forza dei tuoi attacchi, puo' ribaltare le sorti di una battaglia",
+        "name": "pozione di vigore",
+        "positive": true
+    },
+    {
+        "b_cost": 5,
+        "category": "consumable",
+        "description": "Pozione che fornisce un bonus di 5 alla resistenza al gelo",
+        "name": "pozione antigelo",
+        "positive": true
+    }
+]
